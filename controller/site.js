@@ -94,6 +94,10 @@ exports.getHello = (req, res, next) => {
             //   console.log(res)
             // }).catch((err) => console.log(err));
    
+
+  exports.getIndex = (req, res, next) => {
+    res.send("<h1>index</h1>");
+  }
         
     
   
