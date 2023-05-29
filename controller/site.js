@@ -2,19 +2,44 @@ const axios = require("axios");
 const fs = require("fs");
 const FormData = require("form-data");
 const crtypto = require("crypto");
+const puppeteer = require('puppeteer');
+
 
 exports.getHello = (req, res, next) => {
-  
+   
   let hash = crtypto
   .createHash("md5")
   .update(Math.floor(Math.random() * (999999 - 100000 + 1) + 100000).toString())
   .digest("hex");
-  const Link = decodeURI(req.query.link)
-  let screenShotUrl =req.rawHeaders[1];
-  console.log(screenShotUrl)
+  const Link = decodeURI(req.query.link);
+  
+  let screenShotUrl = req.rawHeaders[1];
+  /*
+  (async () => {
+    const browser = await puppeteer.launch({
+       executablePath: '/usr/bin/chromium-browser'
+    });
+    const page = await browser.newPage();
+    await page.setViewport({width:  1500, height: 800});
+    await page.goto(Link);
+   	await page.waitForSelector("#readyForSave");
+    await page.screenshot({
+      path: "./screenshots/screenShot" + hash + ".png",
+    });
+    await browser.close();
+    screenShotUrl += "/screenshots/screenShot" + hash + ".png";
+
+    return res.send(screenShotUrl);
+  })();
+  
+  */
+  
+  
+  
+
   const mypromis = new Promise((res, rej) => {
-  const puppeteer = require("puppeteer");
-   return puppeteer
+  
+    puppeteer
       .launch({
         defaultViewport: {
           width: 1500,
@@ -24,7 +49,7 @@ exports.getHello = (req, res, next) => {
       .then(async (browser) => {
         const page = await browser.newPage();
         console.log(Link);
-       
+        return res.send(screenShotUrl);
         await page.goto(Link);
         await page.waitForSelector("#readyForSave");
         await page.screenshot({
@@ -34,9 +59,11 @@ exports.getHello = (req, res, next) => {
         screenShotUrl += "/screenshots/screenShot" + hash + ".png";
         console.log(screenShotUrl)
 
-        return screenShotUrl;
+         return res.send(screenShotUrl);
       });
   });
+  
+  
  
   //  let readStream = fs.createReadStream("./screenshots/screenShot" + i + ".png");
   //  let form = new FormData();
